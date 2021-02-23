@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="A schedule management with jQuery.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+      <!--datepicker source-->
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  	<script type="text/javascript" src="{% static 'date/jquery.timepicker.js' %}"></script>
+  	<link rel="stylesheet" type="text/css" href="{% static 'date/jquery.timepicker.css' %}" />
+  	<script type="text/javascript" src="{% static 'date/bootstrap-datepicker.js' %}"></script>
+  	<link rel="stylesheet" type="text/css" href="{% static 'date/bootstrap-datepicker.css' %}"/>
+  	<script src="http://jonthornton.github.io/Datepair.js/dist/datepair.js"></script>
+  	<script src="http://jonthornton.github.io/Datepair.js/dist/jquery.datepair.js"></script>
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="{%static "dist/jquery.schedule.css"%}">
+  </head>
+  <body>
+
+   <div class="student">
+           <div class="container">
+          <div class="row min-height">
+              <div class="col-sm-12">
+
+                            <div class="row main_boder">
+                                <div class="col-sm-7">
+                                     <h3 class="appointmnet_list">Create Appointment</h3>
+                                </div>
+                                <div class="col-sm-5">
+                                      <form class="form-inline my-2 my-lg-0" method="GET" action="">
+                                          <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search Date" placeholder="Search With Name" aria-label="Search">
+                                          <button class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search">Search</button>
+                                       </form>
+
+                                </div>
+
+
+                            </div>
+
+                          <form method="POST" action="">{% csrf_token %}
+                               <div class="row" id="datepairExample">
+                                  <div class="col">
+                                    <input type="text" class="form-control date start"  name="{{form.date.name}}" required id="id_{{form.date.name}}" placeholder="Date Ex. 30.10.12 ">
+                                  </div>
+                                  <div class="col">
+                                    <input type="text" class="form-control time start" name="{{form.time_start.name}}" required id="id_{{form.time_start.name}}" required placeholder="Time Ex. 01.00 PM">
+                                  </div> to
+                                  <div class="col">
+                                    <input type="text" class="form-control time end" name="{{form.time_end.name}}" required id="id_{{form.time_end.name}}" required placeholder="Time Ex. 01.30 PM ">
+                                  </div>
+                                  <div class="col">
+                                                                    <input type="text" class="form-control" name="{{form.room_number.name}}" required id="id_{{form.room_number.name}}" required placeholder="Way to connect">
+                                                                  </div>
+
+
+                                  <div class="col">
+                                    <button type="submit" class="btn btn-success">Add <i class="fas fa-plus"></i></button>
+                                  </div>
+
+                                </div>
+                             </form>
+                             <br>
+      </div>
+
+      <script>
+      $('#datepairExample .time').timepicker({
+        'showDuration': true,
+        'timeFormat': 'g:ia'
+      });
+
+      $('#datepairExample .date').datepicker({
+        'format': 'd/m/yyyy',
+        'autoclose': true
+      });
+
+      $('#datepairExample').datepair();
+      </script>
+
+                             <table class="table">
+                                       <thead>
+                                        <tr>
+                                          <th scope="col">Date</th>
+                                          <th scope="col">Time</th>
+                                          <th scope="col">Room code</th>
+
+                                        </tr>
+                                      </thead>{% for appoint in query %} <!--For Loop for all post -->
+                                      {% if appoint.appointment_with != '' %} <!--Filter only those are booked-->
+                                      <tbody>
+                                        <tr>
+                                          <td>{{appoint.date}}</td>
+                                          <td>{{appoint.time_start}} - {{appoint.time_end}}</td>
+                                          <td>{{appoint.room_number}}</td>
+                                          <td><button title="Already booked, Not editable" type="button" class="btn btn-primary">Booked By: {{appoint.appointment_with}}</button></td>
+                                          </td>
+                                        </tr>
+                                      </tbody>{% endif %}
+
+                                      {% if appoint.appointment_with == '' %}<!--Filter Those not Booked yet-->
+                                      <tbody>
+                                        <tr>
+                                          <td>{{appoint.date}}</td>
+                                          <td>{{appoint.time_start}} - {{appoint.time_end}}</td>
+                                          <td>{{appoint.room_number}}</td>
+                                          <td><a href='{% url "appointment_delete" id=appoint.id %}'><button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i></button></a> <a href='{% url "teacher_appointment_update" id=appoint.id %}'><button type="submit" class="btn btn-danger"><i class="far fa-edit"></i></button></a></td>
+
+                                        </tr>
+
+                                      </tbody>{% endif %}
+
+                                      {% endfor %}
+                              </table>
+
+
+
+              </div>
+
+          </div>
+      </div>
+
+
+      <div class="row">
+          <div class="col-lg-8">
+              <div id="schedule"></div>
+          </div>
+          <div class="col-lg-4">
+
+          </div>
+      </div>
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="{%static "dist/jquery.schedule.js"%}"></script>
+<script>
+$(function () {
+  $('#schedule').jqs();
+
+  $('#schedule2').jqs({
+    mode: 'read',
+    data: [
+      {
+        day: 0,
+        periods: [
+          ['20:00', '00:00'],
+          ['20:00', '22:00'], // Invalid period, not displayed
+          ['00:00', '02:00']
+        ]
+      }, {
+        day: 3,
+        periods: [
+          ['00:00', '08:30'],
+          ['09:00', '12:00']
+        ]
+      }]
+  });
+
+  $('#schedule3').jqs({
+    onInit: function () {
+      $('#logs').val('onInit fire !\n' + $('#logs').val());
+    },
+    onAddPeriod: function () {
+      $('#logs').val('onAddPeriod fire !\n' + $('#logs').val());
+    },
+    onRemovePeriod: function () {
+      $('#logs').val('onRemovePeriod fire !\n' + $('#logs').val());
+    },
+    onDuplicatePeriod: function () {
+      $('#logs').val('onDuplicatePeriod fire !\n' + $('#logs').val());
+    },
+    onClickPeriod: function () {
+      $('#logs').val('onClickPeriod fire !\n' + $('#logs').val());
+    }
+  });
+
+  $('#schedule4').jqs({
+    days: 5,
+    periodColors: [
+      ['rgba(0, 0, 0, 0.5)', '#000', '#fff'],
+      ['rgba(200, 0, 0, 0.5)', '#f00', '#000'],
+      ['rgba(0, 200, 0, 0.5)', '#0f0', '#000'],
+      ['rgba(0, 0, 200, 0.5)', '#00f', '#000']
+    ],
+    periodTitle: 'No title',
+    periodBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+    periodBorderColor: '#000',
+    periodTextColor: '#fff',
+    periodRemoveButton: 'Remove please !',
+    periodTitlePlaceholder: 'A custom title'
+  });
+
+  $('#schedule5').jqs({
+    mode: 'edit',
+    daysList: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Trusday', 'Friday', 'Saturday'],
+    hour: 12,
+    periodDuration: 15,
+    periodOptions: false,
+    periodBackgroundColor: 'rgba(216, 247, 15)',
+    periodBorderColor: '#000',
+    periodTextColor: '#000',
+    data: [
+      {
+        day: 0,
+        periods: [
+          ['2', '6'], // Compact 12 hour
+          ['10pm', '12am'],
+          ['12am', '2:30am'] // Invalid period, not displayed
+        ]
+      }, {
+        day: 1,
+        periods: [
+          ['1:45am', '5:15am']
+        ]
+      }, {
+        day: 2,
+        periods: [
+          ['2', '2p'] // Compact 12 hour
+        ]
+      }
+    ]
+  });
+
+  $('#export').click(function () {
+    $('#result').val($('#schedule3').jqs('export'));
+  });
+
+  $('#import').click(function () {
+    var ret = $('#schedule3').jqs('import', [
+      {
+        day: 1,
+        periods: [
+          ['8:00', '10:00'] // Compact
+        ]
+      }, {
+        day: 2,
+        periods: [
+          ['20:00', '00:00'],
+          ['20:00', '22:00'] // Invalid period, not displayed
+        ]
+      }, {
+        day: 4,
+        periods: [
+          { // Full
+            start: '10:00',
+            end: '12:00',
+            title: 'A black period',
+            backgroundColor: '#000',
+            borderColor: '#000',
+            textColor: '#fff'
+          }
+        ]
+      }
+    ]);
+
+    $('#result').val(ret);
+  });
+
+  $('#reset').click(function () {
+    $('#schedule3').jqs('reset');
+    $('#result').val('');
+  });
+});
+</script>
+
+      <div class="footer">
+           <div class="container">
+          <div class="row">
+              <div class="col-sm-12">
+
+              </div>
+
+          </div>
+      </div>
+      </div>
+
+
+
+    </body>
+  </html>
